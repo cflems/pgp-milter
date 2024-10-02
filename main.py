@@ -36,18 +36,18 @@ class PGPMilter(Milter.Base):
     return Milter.CONTINUE
 
   def eom(self):
+    print('Encrypting message to recipients: [%s]' % ', '.join(self.recipients))
+
     raw_headers = b'\n'.join(map(lambda header : b'%s: %s' % header, self.headers))
     msg = email.message_from_bytes(raw_headers + b'\n\n' + self.content,\
                                    policy=email.policy.default)
 
     if b'-----BEGIN PGP MESSAGE-----' in self.content or utils.already_encrypted(msg):
+      print('Already encrypted, passing through.')
       return Milter.ACCEPT
 
-    # TODO: remove debug print
-    print('Encrypting message to recipients: [%s]' % ', '.join(self.recipients))
     enc_msg, encrypted = utils.encrypt(msg, self.recipients)
     if not encrypted:
-      # TODO: remove debug print
       print('No keys found, passing through.')
       return Milter.ACCEPT
 
