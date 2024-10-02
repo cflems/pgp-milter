@@ -28,6 +28,8 @@ def load_keys(addrs: list[str]) -> list[pgpy.PGPKey]:
         key.parse(keydata)
       except:
         continue
+      if not key.is_expired:
+        keys[keyfpr] = key
 
     return list(keys.values())
   finally:
