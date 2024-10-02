@@ -1,0 +1,16 @@
+[Unit]
+Description=CMail PGP Milter Service
+Documentation=https://github.com/cflems/pgp-milter
+After=network.target
+
+[Service]
+Type=exec
+User=pgp-milter
+Group=pgp-milter
+StandardOutput=append:/var/log/pgp-milter.log
+StandardError=append:/var/log/pgp-milter.err
+ExecStart=/usr/bin/python3 /opt/pgp-milter/main.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

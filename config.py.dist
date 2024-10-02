@@ -1,0 +1,16 @@
+socket = '/var/spool/postfix/pgp-milter/pgp-milter.sock'
+db_config = {
+  'host': 'localhost',
+  'user': 'user',
+  'password': 'password',
+  'database': 'database'
+}
+
+# Things to bear in mind when writing this query:
+# - `fingerprint` can be any deduplicating attribute of any type
+# - `raw_data` can either be armored or unarmored key data
+# - column names don't matter
+# - the input argument (%s) is a series of addresses, like so:
+#   - `'a@example.com', 'b@example.com', 'c@example.com'`
+# - a prepared statement is used so input is sanitized for you
+key_loader_query = 'SELECT fingerprint, raw_data FROM pgp_keys WHERE addr IN (%s)'
