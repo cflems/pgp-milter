@@ -21,11 +21,16 @@ def encrypt(msg: EmailMessage, recipients: list[str]) -> tuple[EmailMessage, boo
   if len(rcpt_keys) < 1:
     return msg, False
 
-  try:
-    enc_msg = pgpy.PGPMessage.new(payload.as_string())
-    for key in rcpt_keys:
+  encrypted = False
+  enc_msg = pgpy.PGPMessage.new(payload.as_string())
+  for key in rcpt_keys:
+    try:
       enc_msg = key.encrypt(enc_msg)
-  except:
+      encrypted = True
+    except:
+      continue
+
+  if not encrypted:
     return msg, False
 
   container = MIMEMultipart(
